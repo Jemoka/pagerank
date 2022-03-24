@@ -10,13 +10,20 @@ private:
 };
 
 int main() {
-    // Eigen::Matrix<float, 4,4> m;
+    Eigen::SparseMatrix<float> m;
+    m.conservativeResize(10, 10);
 
+    m.insert(1,4) = 17;
+
+    std::cout << m.coeffRef(1,4) << "\n";
+
+    // 
     // auto eivals = m.eigenvalues();
 
-    // std::cout << eivals << "\n";
+    // for (int i=0; i<=1000; i++) {
+    // }
 
-    PageRank pr;
+    // PageRank pr;
 
     return 0;
 }

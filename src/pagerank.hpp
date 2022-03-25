@@ -15,14 +15,16 @@
 class PageRank {
 public:
     Eigen::Index insert(std::vector<Eigen::Index> targets);
+    float get(Eigen::Index id);
 
+    Eigen::SparseMatrix<float> linkMatrix;
     PageRank() {
         linkMatrix.conservativeResize(1,1);
-        linkMatrix.insert(0,0) = 1;
+        linkMatrix.insert(0,0) = 0;
     }
     
 private: 
-    Eigen::SparseMatrix<float> linkMatrix;
+    Eigen::Index curr= 1;
 
     Eigen::VectorX<float> shiftedInverseTransform(float alpha, float loss);
     Eigen::VectorX<float> shiftedInverseTransform(float loss=0.0001);

@@ -1,40 +1,54 @@
 #include "pagerank.hpp"
+#include <cstdio>
+
+float PageRank::get(Eigen::Index id) {
+    // Check that we actually have this page noted
+    assert(id < this->linkMatrix.cols());
+
+    // Get its cached PageRank
+    return this->pagerank[id];
+}
 
 Eigen::Index PageRank::insert(std::vector<Eigen::Index> targets) {
-    assert(targets.size() > 0);
+    // Procedure to just add a node without subchild
+    Eigen::Index newIndex = curr++;
 
-    // Get the current size of our sparse matrix
-    Eigen::Index newIndex = linkMatrix.rows();
+    // Get a tenative max index, which does not include potential targets
+    auto tenativeIndex = std::max(newIndex, this->linkMatrix.cols()-1); 
+
+    if (targets.size() == 0) {
+        // Expand the size of our sparse matrix to the tenativeindex
+        (this->linkMatrix).conservativeResize(tenativeIndex+1, tenativeIndex+1);
+
+        // Update the supernode
+        for (int i = 1; i<tenativeIndex+1; i++) {
+            // discounting supernode, we add 1/(num_items-1) to each link
+            linkMatrix.coeffRef(i, 0) = (float) 1/((this->linkMatrix).cols()-1);
+        }
+
+        // And be done
+        return newIndex;
+    }
 
     // Get the max of the nodes in list
     auto maxIndex = std::max(*(std::max_element(std::begin(targets), std::end(targets))),
-                             newIndex); 
+                             tenativeIndex); 
 
     // Expand the size of our sparse matrix
-    auto linkmatrix = this->linkMatrix;
-    linkMatrix.conservativeResize(maxIndex+1, // +1 because 0 indexing
-                                  maxIndex+1);
+    (this->linkMatrix).conservativeResize(maxIndex+1, // +1 because 0 indexing
+                                          maxIndex+1);
 
     // Define link weight
-    float linkWeight = 1/targets.size();
+    float linkWeight = (float) 1/targets.size();
 
-    // Define a type as Fliplet to create a triplet list
-    typedef Eigen::Triplet<float> Fliplet;
-
-    // Create a node insertion
-    std::vector<Fliplet> nodes;
-
-    // Create the triplet list
-    for (Eigen::Index &i : targets) {
-        nodes.push_back(Fliplet(i, newIndex, linkWeight));
-    }
-
-    // Add the values
-    linkMatrix.setFromTriplets(nodes.begin(), nodes.end());
+    // Set additional values
+    for (Eigen::Index &i : targets)
+        (this->linkMatrix).coeffRef(i, newIndex) += linkWeight;
 
     // Update the supernode
-    for (int i=0; i<newIndex+1; i++) {
-        linkMatrix.coeffRef(i, 0) = 1/(newIndex+1);
+    for (int i = 1; i<maxIndex+1; i++) {
+        // discounting supernode, we add 1/(num_items-1) to each link
+        linkMatrix.coeffRef(i, 0) = (float) 1/((this->linkMatrix).cols()-1);
     }
 
     // Calculate principle eigenvector a.k.a pagerank
@@ -45,14 +59,11 @@ Eigen::Index PageRank::insert(std::vector<Eigen::Index> targets) {
 
 Eigen::VectorX<float> PageRank::shiftedInverseTransform(float loss) {
     // TODO start transfromation at alpha=0.1
-    return this->shiftedInverseTransform(0.1, loss);
+    return this->shiftedInverseTransform(0.01, loss);
 }
 
 Eigen::VectorX<float> PageRank::shiftedInverseTransform(float alpha, float loss) {
     using namespace Eigen;
-
-    // TODO remove
-    linkMatrix.conservativeResize(5,5);
 
     // Calculate the incoming dimention
     int inDim = this->linkMatrix.cols();

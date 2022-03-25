@@ -1,0 +1,23 @@
+* PageRank
+This is an implementation of an matrix-based PageRank in C++-20 in partial completion of CS223. 
+
+** Building and Running
+This is a CMake project; build it how you would any others. It is dependent on =Eigen3.4=, the matrix algebra library in C++.
+
+Generate the spec via:
+
+#+begin_src bash
+cmake .
+#+end_src
+
+If this command fails, you have likely an improperly configured =CXX_INCLUDE_PATH= or library discovery location such that CMake could not find Eigen.
+
+Then, execute =make= to compile the binary.
+
+** Implementation Details
+This implementation leverages the link matrix approach to PageRank calculation, with a default damping factor of =0.85=. Eigenvalues to the matrix is calculated via the [[https://en.wikipedia.org/wiki/Power_iteration][Power Iteration]] method, which is considerably faster when implemented on Sparse matrices (as in the case here) compared to most other approaches. An alternative solution [[https://github.com/Jemoka/pagerank/blob/bdae871288fb9537b5eb324ac445bb8b56dc3414/src/pagerank.cpp#L51-L85][based on Shifted-Inverse Transform]] is also provided, but the approach turned to be much slower than power iteration.
+
+The idea behind power iteration is that principle eigen-vectors don't change direction (i.e. their unit vectors remain the same) across a linear map. Hence, repeatedly applying the linear map and normalizing a vector, as implemented here, provides a series that will converge to one of the eigenvalues as the vector would descend into one of the minima which makes it unchanging.
+
+This implementation also leverages the concept of a super-node to be able to ensure that the vectors will not collapse due to multiplication by 0.
+

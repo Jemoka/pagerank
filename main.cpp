@@ -12,25 +12,23 @@ int main() {
 
     // Create vectors encoding the links of every object
     std::vector<Eigen::Index> a;
-    a.push_back(4);
-    a.push_back(3);
     a.push_back(2);
+    a.push_back(3);
 
     std::vector<Eigen::Index> b;
-    b.push_back(1);
     b.push_back(3);
 
     std::vector<Eigen::Index> c;
-    c.push_back(2);
     c.push_back(1);
 
     std::vector<Eigen::Index> d;
-    c.push_back(2);
+    d.push_back(3);
     
     // Push the links to the pagerank calculator
     pr.insert(a);
     pr.insert(b);
     pr.insert(c);
+    pr.insert(d);
 
     // Get the page rank of each page
     std::cout << pr.get(1) << std::endl;

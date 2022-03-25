@@ -26,8 +26,7 @@ public:
 private: 
     Eigen::Index curr= 1;
 
-    Eigen::VectorX<float> shiftedInverseTransform(float alpha, float loss);
-    Eigen::VectorX<float> shiftedInverseTransform(float loss=0.0001);
+    Eigen::VectorX<float> powerMethod(int n=1000);
     
     Eigen::VectorX<float> pagerank;
 };

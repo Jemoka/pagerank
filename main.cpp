@@ -2,13 +2,14 @@
 #include <iostream>
 #include <algorithm>
 #include <ostream>
+#include <vector>
 
 // Our Headers
 #include "src/pagerank.hpp"
 
 int main() {
     PageRank pr;
-    pr.shiftedInverseTransform();
 
     return 0;
 }
+

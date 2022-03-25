@@ -1,5 +1,54 @@
 #include "pagerank.hpp"
 
+Eigen::Index PageRank::insert(std::vector<Eigen::Index> targets) {
+    // Get the current size of our sparse matrix
+    Eigen::Index newIndex = linkMatrix.rows();
+
+    // Get the max of the nodes in list
+    Eigen::Index maxIndex = *(std::max_element(std::begin(targets), std::end(targets))); 
+
+    // Expand the size of our sparse matrix
+    auto linkmatrix = this->linkMatrix;
+    linkMatrix.conservativeResize(maxIndex+1, // +1 because 0 indexing
+                                  maxIndex+1);
+
+    // Define link weight
+    float linkWeight = 1/targets.size();
+
+    // Define a type as Fliplet to create a triplet list
+    typedef Eigen::Triplet<float> Fliplet;
+
+    // Create a node insertion
+    std::vector<Fliplet> nodes;
+
+    // Create the triplet list
+    for (Eigen::Index &i : targets) {
+        nodes.push_back(Fliplet(i, newIndex, linkWeight));
+    }
+
+    // Add the values
+    linkMatrix.setFromTriplets(nodes.begin(), nodes.end());
+
+    // Update the supernode
+    for (int i=0; i<newIndex+1; i++) {
+        linkMatrix.coeffRef(i, 0) = 1/(newIndex+1);
+    }
+
+    // Calculate principle eigenvector a.k.a pagerank
+    auto pagerank = this->shiftedInverseTransform();
+
+    // Get the old pointer
+    auto oldrank = this->pagerank;
+
+    // Overwrite the old pointer
+    this->pagerank = &pagerank;
+
+    // Free the old one
+    free(oldrank);
+
+    return newIndex;
+}
+
 Eigen::VectorX<float> PageRank::shiftedInverseTransform(float loss) {
     // TODO start transfromation at alpha=0.1
     return this->shiftedInverseTransform(0.1, loss);

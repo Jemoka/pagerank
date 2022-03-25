@@ -4,6 +4,8 @@
 #include <sys/syslimits.h>
 #include <algorithm>
 #include <iostream>
+#include <cassert>
+#include <cstddef>
 #include <limits>
 #include <vector>
 
@@ -18,10 +20,6 @@ public:
         linkMatrix.conservativeResize(1,1);
         linkMatrix.insert(0,0) = 1;
     }
-
-    ~PageRank() {
-        free(this->pagerank);
-    }
     
 private: 
     Eigen::SparseMatrix<float> linkMatrix;
@@ -29,7 +27,7 @@ private:
     Eigen::VectorX<float> shiftedInverseTransform(float alpha, float loss);
     Eigen::VectorX<float> shiftedInverseTransform(float loss=0.0001);
     
-    Eigen::VectorX<float> *pagerank;
+    Eigen::VectorX<float> pagerank;
 };
 
 #endif

@@ -1,11 +1,14 @@
 #include "pagerank.hpp"
 
 Eigen::Index PageRank::insert(std::vector<Eigen::Index> targets) {
+    assert(targets.size() > 0);
+
     // Get the current size of our sparse matrix
     Eigen::Index newIndex = linkMatrix.rows();
 
     // Get the max of the nodes in list
-    Eigen::Index maxIndex = *(std::max_element(std::begin(targets), std::end(targets))); 
+    auto maxIndex = std::max(*(std::max_element(std::begin(targets), std::end(targets))),
+                             newIndex); 
 
     // Expand the size of our sparse matrix
     auto linkmatrix = this->linkMatrix;
@@ -35,16 +38,7 @@ Eigen::Index PageRank::insert(std::vector<Eigen::Index> targets) {
     }
 
     // Calculate principle eigenvector a.k.a pagerank
-    auto pagerank = this->shiftedInverseTransform();
-
-    // Get the old pointer
-    auto oldrank = this->pagerank;
-
-    // Overwrite the old pointer
-    this->pagerank = &pagerank;
-
-    // Free the old one
-    free(oldrank);
+    this->pagerank = this->shiftedInverseTransform();
 
     return newIndex;
 }

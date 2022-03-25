@@ -16,12 +16,12 @@ int main() {
     a.push_back(2);
 
     std::vector<Eigen::Index> b;
-    a.push_back(1);
-    a.push_back(3);
+    b.push_back(1);
+    b.push_back(3);
 
     std::vector<Eigen::Index> c;
-    a.push_back(2);
-    a.push_back(1);
+    c.push_back(2);
+    c.push_back(1);
     
     pr.insert(a);
     pr.insert(b);

@@ -1,5 +1,6 @@
 #include "pagerank.hpp"
 #include <cstdio>
+#include <iostream>
 
 float PageRank::get(Eigen::Index id) {
     // Check that we actually have this page noted
@@ -37,6 +38,7 @@ Eigen::Index PageRank::insert(std::vector<Eigen::Index> targets) {
     for (int i = 1; i<maxIndex+1; i++) {
         // discounting supernode, we add 1/(num_items-1) to each link
         linkMatrix.coeffRef(0, i) = (float) 1/((this->linkMatrix).cols()-1);
+        linkMatrix.coeffRef(i, 0) = (float) 1/((this->linkMatrix).cols()-1);
     }
 
     // Calculate principle eigenvector a.k.a pagerank
@@ -54,7 +56,7 @@ Eigen::VectorX<float> PageRank::powerMethod(int n) {
     // Create the seed vector
     VectorX<float> xk = VectorX<float>();
     xk.resize(inDim);
-    xk.fill(1);
+    xk.fill((float) 1/(inDim-1));
 
     // Go Ham
     for (int i=0; i<n; i++) {

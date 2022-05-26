@@ -2,9 +2,9 @@
 This is an implementation of an matrix-based PageRank in C++-20 in partial completion of CS223. 
 
 ** Building and Running
-This is a CMake project; build it how you would any others. It is dependent on =Eigen3.4=, the matrix algebra library in C++.
+This is a CMake project; build it how you would any others. It is dependent on =Eigen3.4=, the matrix algebra library in C++. For most platforms, =eigen= can be installed with most major package managers: =brew install eigen= (macOS), =sudo pacman -S eigen= (arch), =sudo apt-get install libeigen3-dev= (Debian + friends).
 
-Generate the spec via:
+Once Eigen is installed, generate the spec via:
 
 #+begin_src bash
 cmake .

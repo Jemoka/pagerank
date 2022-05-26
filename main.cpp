@@ -31,10 +31,10 @@ int main() {
     pr.insert(d);
 
     // Get the page rank of each page
-    std::cout << pr.get(1) << std::endl;
-    std::cout << pr.get(2) << std::endl;
-    std::cout << pr.get(3) << std::endl;
-    std::cout << pr.get(4) << std::endl;
+    printf("Page 1 Rank: %.2f\n", pr.get(1)); 
+    printf("Page 2 Rank: %.2f\n", pr.get(2)); 
+    printf("Page 3 Rank: %.2f\n", pr.get(3)); 
+    printf("Page 4 Rank: %.2f\n", pr.get(4)); 
 
     return 0;
 }

@@ -31,6 +31,7 @@ int main() {
     pr.insert(d);
 
     // Get the page rank of each page
+    printf("Supernode Rank: %.2f\n", pr.get(0)); 
     printf("Page 1 Rank: %.2f\n", pr.get(1)); 
     printf("Page 2 Rank: %.2f\n", pr.get(2)); 
     printf("Page 3 Rank: %.2f\n", pr.get(3)); 

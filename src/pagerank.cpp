@@ -70,6 +70,6 @@ Eigen::VectorX<float> PageRank::powerMethod(int n) {
         xk.normalize();
     }
 
-    return xk/(1+0.25*inDim);
+    return xk/(1+((float) 1/(inDim-1))*inDim);
 }
 

@@ -15,9 +15,10 @@
 class PageRank {
 public:
     Eigen::Index insert(std::vector<Eigen::Index> targets);
-    float get(Eigen::Index id);
+    double get(Eigen::Index id);
+    double sum();
 
-    Eigen::SparseMatrix<float> linkMatrix;
+    Eigen::SparseMatrix<double> linkMatrix;
     PageRank() {
         linkMatrix.conservativeResize(1,1);
         linkMatrix.insert(0,0) = 0;
@@ -26,9 +27,9 @@ public:
 private: 
     Eigen::Index curr= 1;
 
-    Eigen::VectorX<float> powerMethod(int n=1000);
+    Eigen::VectorX<double> powerMethod(int n=1000);
     
-    Eigen::VectorX<float> pagerank;
+    Eigen::VectorX<double> pagerank;
 };
 
 #endif

@@ -2,13 +2,17 @@
 #include <cstdio>
 #include <iostream>
 
-float PageRank::get(Eigen::Index id) {
+double PageRank::get(Eigen::Index id) {
     // Check that we actually have this page noted
     assert(id < this->linkMatrix.cols());
 
-    this->pagerank = this->powerMethod();
     // Get its cached PageRank
     return this->pagerank[id];
+}
+
+double PageRank::sum() {
+    // Get its cached PageRank
+    return (this->pagerank).sum();
 }
 
 Eigen::Index PageRank::insert(std::vector<Eigen::Index> targets) {
@@ -26,50 +30,49 @@ Eigen::Index PageRank::insert(std::vector<Eigen::Index> targets) {
                                           maxIndex+1);
 
     // Define link weight
-    float linkWeight = (float) 1/(targets.size()+1);
+    double linkWeight = (double) 1/(targets.size()+1);
+
+    // Set additional values
+    for (Eigen::Index &i : targets)
+        (this->linkMatrix).coeffRef(i,newIndex) += linkWeight;
 
     // Set supernode
     linkMatrix.coeffRef(0,newIndex) = linkWeight;
 
-    // Set additional values
-    for (Eigen::Index &i : targets)
-        (this->linkMatrix).coeffRef(i, newIndex) += linkWeight;
-
     // Update the supernode
     for (int i = 1; i<maxIndex+1; i++) 
         // discounting supernode, we add 1/(num_items-1) to each link
-        linkMatrix.coeffRef(i,0) = (float) 1/((this->linkMatrix).cols()-1);
+        linkMatrix.coeffRef(i,0) = (double) 1/((this->linkMatrix).cols()-1);
 
     // Calculate principle eigenvector a.k.a pagerank
-    // this->pagerank = this->powerMethod();
+    this->pagerank = this->powerMethod();
 
     return newIndex;
 }
 
-Eigen::VectorX<float> PageRank::powerMethod(int n) {
+Eigen::VectorX<double> PageRank::powerMethod(int n) {
     using namespace Eigen;
 
     // Calculate the incoming dimention
     int inDim = this->linkMatrix.cols();
 
     // Create the seed vector
-    VectorX<float> xk = VectorX<float>();
+    VectorX<double> xk = VectorX<double>();
     xk.resize(inDim);
-    xk.fill(1);
+    xk.fill((float) 1/(inDim));
 
     // Go Ham
     for (int i=0; i<n; i++) {
         // Set damping
-        float DAMP = 1;
+        double DAMP = 0.85;
         // Calculate the damping vector
-        VectorX<float> damp = VectorX<float>();
+        VectorX<double> damp = VectorX<double>();
         damp.resize(inDim);
         damp.fill((1-DAMP));
         // We first apply the matrix upon xk
-        xk = damp+DAMP*(linkMatrix)*xk;
-        xk.normalize();
+        xk = damp+DAMP*(this->linkMatrix)*xk;
     }
 
-    return xk/(1+((float) 1/(inDim-1))*inDim);
+    return xk;
 }
 
